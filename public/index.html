@@ -1,0 +1,43 @@
+<script>
+  const checkID = async () => {
+    var body = {
+      base64image: ""
+    };
+    const reader = new FileReader();
+    var myFile = document.querySelector("input[type=file]").files[0];
+    //console.log(myFile)
+    reader.readAsDataURL(myFile);
+    reader.onload = async () => {
+      //document.getElementById("image").src = reader.result;
+      var raw = reader.result.split(",");
+      body.base64image = raw[1];
+
+      const url = `/api/checkID`;
+      //check();
+      //console.log({ body });
+      document.getElementById("thumbnail").src = reader.result;
+      const result = await fetch(url, {
+        headers: {
+          "content-type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify(body)
+      }).then((x) => x.json());
+
+      document.getElementById("result").innerHTML = JSON.stringify(result);
+    };
+  };
+</script>
+<style>
+  #thumbnail {
+    width: 100px;
+  }
+</style>
+
+<body>
+  <input type="file" onchange="checkID()" />
+  <img id="thumbnail" src="" />
+  <br />
+  result:
+  <div id="result"></div>
+</body>
